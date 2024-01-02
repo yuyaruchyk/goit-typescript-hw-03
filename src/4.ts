@@ -1,45 +1,52 @@
 class Key {
-  private signature: string;
-  constructor() {
-    this.signature = `${Math.random()}`;
-  }
+  constructor(private signature: number) {}
 
-  getSignature() {
+  getSignature(): number {
     return this.signature;
   }
 }
+
 class Person {
-  private key: Key;
-  constructor(key: Key) {
-    this.key = key;
-  }
+  constructor(private key: Key) {}
 
   getKey(): Key {
     return this.key;
   }
 }
-class House {
-  door: boolean = false;
-  key: Key;
-  tenants: Person[] = [];
-  constructor(key: Key) {}
 
-  comeIn(newPerson: Person) {
+abstract class House {
+  protected door: boolean = false;
+  protected key: Key;
+  protected tenants: Person[] = [];
+
+  constructor(key: Key) {
+    this.key = key;
+  }
+
+  comeIn(person: Person): void {
     if (this.door) {
-      this.tenants.push(newPerson);
+      this.tenants.push(person);
+      console.log("Person came in.");
+    } else {
+      console.log("Door is closed.");
     }
   }
-  openDoor(key: Key) {}
+
+  abstract openDoor(key: Key): void;
 }
+
 class MyHouse extends House {
   openDoor(key: Key): void {
     if (key.getSignature() === this.key.getSignature()) {
       this.door = true;
+      console.log("Door is open");
+    } else {
+      console.log("Door is closed");
     }
   }
 }
 
-const key = new Key();
+const key = new Key(Math.random());
 
 const house = new MyHouse(key);
 const person = new Person(key);
